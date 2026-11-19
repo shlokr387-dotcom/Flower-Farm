@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Presentation</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    .presentation {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .together-button {
+      position: fixed;
+      top: calc(50% + 3cm);
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      padding: 16px 36px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.22);
+
+      background: rgba(255,255,255,0.035);
+
+      backdrop-filter: blur(135deg) saturate(120%);
+      -webkit-backdrop-filter: blur(135deg) saturate(120%);
+
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      white-space: nowrap;
+
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.35),
+        0 8px 25px rgba(0,0,0,0.2);
+
+      cursor: pointer;
+    }
+
+    .together-button:hover {
+      background: rgba(255,255,255,0.08);
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+
+.lightning-spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3px;
+  height: 24px;
+  border-radius: 50%;
+  background: #b9f5ff;
+  box-shadow: 0 0 8px #d0bf55, 0 0 18px #d0bf55;
+  pointer-events: none;
+  animation: spark-fly 0.6s ease-out forwards;
+  z-index: 10;
+}
+
+@keyframes spark-fly {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  to {
+    opacity: 0;
+    transform: translate(
+      calc(-50% + var(--x)),
+      calc(-50% + var(--y))
+    );
+  }
+}
+
+.thunder-flash {
+  position: fixed;
+  inset: 0;
+  background: rgba(150, 225, 255, 0.12);
+  pointer-events: none;
+  z-index: 20;
+  animation: flash-out 0.45s ease-out forwards;
+}
+
+@keyframes flash-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+  </style>
+</head>
+
+<body>
+
+  <div class="presentation">
+    <iframe
+      src="https://www.canva.com/design/DAHbYoAmyB4/o97h9YTRnqC-yGJGt3xMSA/view?embed"
+      allowfullscreen
+      allow="fullscreen">
+    </iframe>
+  </div>
+
+  <button class="together-button" onclick="window.location.href='/together.html'">
+  CLICK TO BE TOGETHER
+</button>
+
+<script>
+  const button = document.querySelector(".together-button");
+
+  button.addEventListener("click", () => {
+    const flash = document.createElement("div");
+    flash.className = "thunder-flash";
+    document.body.appendChild(flash);
+
+    for (let i = 0; i < 18; i++) {
+      const spark = document.createElement("span");
+      spark.className = "lightning-spark";
+
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 50 + Math.random() * 130;
+
+      spark.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
+      spark.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
+
+      button.appendChild(spark);
+    }
+
+    setTimeout(() => flash.remove(), 450);
+    setTimeout(() => {
+      button.querySelectorAll(".lightning-spark").forEach(s => s.remove());
+    }, 650);
+  });
+</script>
+</body>
+</html>
+
+</body>
+</html>

@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 50% 45%, #3b080d 0%, #170306 40%, #050505 78%);
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .player {
+      width: 100%;
+      max-width: 390px;
+      padding: 28px;
+      background: rgba(20, 15, 16, 0.88);
+      border: 1px solid rgba(255, 60, 75, 0.22);
+      border-radius: 22px;
+      box-shadow: 0 20px 80px rgba(180, 0, 25, 0.18);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      color: #ff5363;
+      font-size: 11px;
+      letter-spacing: 3px;
+      margin-bottom: 25px;
+    }
+
+    .artwork {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 15px;
+      background: linear-gradient(145deg, #4a0b14, #160408 65%, #050505);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 25px;
+    }
+
+    .artwork span {
+      font-size: 75px;
+      color: #ff344c;
+      text-shadow: 0 0 35px rgba(255, 20, 55, 0.55);
+    }
+
+    .song-title {
+      font-size: 21px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .artist {
+      color: #999;
+      font-size: 13px;
+      margin-bottom: 25px;
+    }
+
+    .progress {
+      width: 100%;
+      accent-color: #ff3048;
+      cursor: pointer;
+    }
+
+    .time {
+      display: flex;
+      justify-content: space-between;
+      color: #888;
+      font-size: 11px;
+      margin-top: 7px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      margin: 25px 0;
+    }
+
+    .controls button {
+      border: none;
+      background: transparent;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    #playButton {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #e51d38;
+      color: white;
+      font-size: 24px;
+      box-shadow: 0 0 25px rgba(229, 29, 56, 0.35);
+    }
+
+    .volume {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 25px;
+    }
+
+    .volume input {
+      flex: 1;
+      accent-color: #ff3048;
+    }
+
+    .enter {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #e51d38;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    .enter:hover {
+      background: #ff3048;
+      box-shadow: 0 0 25px rgba(229, 29, 56, 0.35);
+    }
+
+    .note {
+      text-align: center;
+      color: #777;
+      font-size: 10px;
+      margin-top: 17px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="player">
+
+    <div class="top">
+      <span>NOW PLAYING</span>
+      <span>YOUR FAV</span>
+    </div>
+
+    <div class="artwork">
+      <span>♫</span>
+    </div>
+
+    <div class="song-title">A Song for You</div>
+    <div class="artist">A little music before we begin</div>
+
+    <audio id="music" src="/music/background.mp3" preload="metadata"></audio>
+
+    <input class="progress" id="progress" type="range"
+      min="0" max="100" value="0">
+
+    <div class="time">
+      <span id="currentTime">0:00</span>
+      <span id="duration">0:00</span>
+    </div>
+
+    <div class="controls">
+      <button onclick="music.currentTime = 0">↶</button>
+      <button id="playButton">▶</button>
+      <button onclick="music.currentTime = music.duration || 0">↷</button>
+    </div>
+
+    <div class="volume">
+      <span>VOL</span>
+      <input id="volume" type="range" min="0" max="1"
+        step="0.01" value="0.12">
+    </div>
+
+    <button class="enter" id="enterButton">
+      PLAY & ENTER WEBSITE →
+    </button>
+
+    <div class="note">MADE FOR A SPECIAL MOMENT</div>
+
+  </div>
+
+  <iframe
+  id="websiteFrame"
+  style="display:none; position:fixed; inset:0; width:100%; height:100%; border:none; z-index:100;"
+></iframe>
+
+  <script>
+    const music = document.getElementById("music");
+    const playButton = document.getElementById("playButton");
+    const enterButton = document.getElementById("enterButton");
+    const progress = document.getElementById("progress");
+    const volume = document.getElementById("volume");
+
+    music.volume = 0.12;
+
+    function formatTime(seconds) {
+      if (!Number.isFinite(seconds)) return "0:00";
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      return min + ":" + String(sec).padStart(2, "0");
+    }
+
+    playButton.addEventListener("click", async () => {
+      if (music.paused) {
+        try {
+          await music.play();
+          playButton.textContent = "Ⅱ";
+        } catch (error) {
+          alert("Song play nahi ho paya. MP3 file check karo.");
+        }
+      } else {
+        music.pause();
+        playButton.textContent = "▶";
+      }
+    });
+
+    volume.addEventListener("input", () => {
+      music.volume = Number(volume.value);
+    });
+
+    music.addEventListener("loadedmetadata", () => {
+      document.getElementById("duration").textContent =
+        formatTime(music.duration);
+    });
+
+    music.addEventListener("timeupdate", () => {
+      document.getElementById("currentTime").textContent =
+        formatTime(music.currentTime);
+
+      if (Number.isFinite(music.duration) && music.duration > 0) {
+        progress.value = (music.currentTime / music.duration) * 100;
+      }
+    });
+
+    progress.addEventListener("input", () => {
+      if (Number.isFinite(music.duration)) {
+        music.currentTime = (progress.value / 100) * music.duration;
+      }
+    });
+
+    music.addEventListener("ended", () => {
+      playButton.textContent = "▶";
+    });
+
+    enterButton.addEventListener("click", async () => {
+  try {
+    if (music.paused) {
+      await music.play();
+    }
+
+    const frame = document.getElementById("websiteFrame");
+
+    frame.src = "/";
+    frame.style.display = "block";
+
+    document.querySelector(".player").style.display = "none";
+
+  } catch (error) {
+    alert("Pehle Play button dabao, phir Enter Website.");
+  }
+});
+  </script>
+
+</body>
+</html>
