@@ -171,7 +171,7 @@
     <div class="song-title">A Song for You</div>
     <div class="artist">A little music before we begin</div>
 
-    <audio id="music" src="/music/background.mp3" preload="metadata"></audio>
+    <audio id="music" src="../music/background.mp3" preload="metadata"></audio>
 
     <input class="progress" id="progress" type="range"
       min="0" max="100" value="0">
@@ -272,7 +272,7 @@
 
     const frame = document.getElementById("websiteFrame");
 
-    frame.src = "/";
+    frame.src = "./index.html";
     frame.style.display = "block";
 
     document.querySelector(".player").style.display = "none";
